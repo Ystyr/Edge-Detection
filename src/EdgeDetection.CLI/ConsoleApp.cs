@@ -9,6 +9,9 @@ namespace EdgeDetection.CLI
     {
         public static void Run (CliConfig config)
         {
+            using var image = Image.Load<Rgba32>(config.InputPath);
+            using var result = EdgeDetector.Run(image, Enum.Parse<EdgeDetector.OperatorType>(config.Operator, true));
+            result.Save(config.OutputPath);
         }
     }
 }
