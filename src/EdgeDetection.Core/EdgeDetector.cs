@@ -1,5 +1,6 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Diagnostics;
 
 namespace EdgeDetection.Core
 {
@@ -30,13 +31,39 @@ namespace EdgeDetection.Core
             }
         };
 
+        static readonly Kernel Prewitt = new Kernel {
+            gx = new int[,] {
+            { -1, 0, 1 },
+            { -1, 0, 1 },
+            { -1, 0, 1 }
+            },
+            gy = new int[,] {
+            {  1,  1,  1 },
+            {  0,  0,  0 },
+            { -1, -1, -1 }
+            }
+        };
+
+        static readonly Dictionary<OperatorType, Kernel> Kernels = new Dictionary<OperatorType, Kernel>() {
+            { OperatorType.Sobel, Sobel}, { OperatorType.Prewitt, Prewitt}
+        };
+
         public static Image<Rgba32> Run (Image<Rgba32> input, OperatorType op)
+        {
+            var sw = Stopwatch.StartNew();
+            var result = DetectEdges(input, op);
+            sw.Stop();
+            Console.WriteLine($"[INFO] CPU Edge Detection took {sw.ElapsedMilliseconds} ms."); 
+			return result;
+        }
+
+        private static Image<Rgba32> DetectEdges (Image<Rgba32> input, OperatorType op)
         {
             try {
                 return DetectEdgesGPU(input, op);
             }
             catch (Exception ex) {
-                Console.WriteLine($"[WARN] GPU failed: {ex.Message}, CPU fallback");
+                Console.WriteLine($"[WARN] GPU failed: {ex.Message}, executing CPU fallback");
                 return DetectEdgesCPU(input, op);
             }
         }
@@ -48,10 +75,15 @@ namespace EdgeDetection.Core
 
         private static Image<Rgba32> DetectEdgesCPU (Image<Rgba32> input, OperatorType op)
         {
+            /// Convert to grayscale using luminance formula
+            int GetIntensity (Rgba32 pixel) => (int)(
+                0.299f * pixel.R + 0.587f * pixel.G + 0.114f * pixel.B
+                );
+            
             int width = input.Width;
             int height = input.Height;
             var output = new Image<Rgba32>(width, height);
-            var kernel = Sobel;
+            var kernel = Kernels[op];
 
             for (int y = 1; y < height - 1; y++) {
                 for (int x = 1; x < width - 1; x++) {
@@ -61,7 +93,7 @@ namespace EdgeDetection.Core
                     for (int j = -1; j <= 1; j++) {
                         for (int i = -1; i <= 1; i++) {
                             var pixel = input[x + i, y + j];
-                            int intensity = (int)(0.299f * pixel.R + 0.587f * pixel.G + 0.114f * pixel.B);
+                            int intensity = GetIntensity(pixel);
                             sumX += intensity * kernel.gx[j + 1, i + 1];
                             sumY += intensity * kernel.gy[j + 1, i + 1];
                         }

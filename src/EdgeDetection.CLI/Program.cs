@@ -11,10 +11,8 @@ namespace EdgeDetection.CLI
                 Console.WriteLine("------------------------------------");
                 Console.Write("Choose operator (sobel/prewitt): ");
                 string op = Console.ReadLine();
-                Console.Write("Enter input image path: ");
-                string inputPath = Console.ReadLine();
-                Console.Write("Enter output image path: ");
-                string outputPath = Console.ReadLine();
+                string inputPath = "../../../../../assets/fishPie.jpg";
+                string outputPath = $"../../../../../assets/fishPie_{op}.jpg";
 
                 /// Simulate command-line args
                 args = new string[] {
