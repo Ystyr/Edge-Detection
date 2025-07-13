@@ -1,4 +1,6 @@
-﻿using SixLabors.ImageSharp;
+﻿using EdgeDetection.Core.Preprocessors;
+using SharpGen.Runtime;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Diagnostics;
 
@@ -48,13 +50,23 @@ namespace EdgeDetection.Core
             { OperatorType.Sobel, Sobel}, { OperatorType.Prewitt, Prewitt}
         };
 
-        public static Image<Rgba32> Run (Image<Rgba32> input, OperatorType op)
+        public static Image<Rgba32> Run (Image<Rgba32> input, OperatorType op, params IPreprocess[] preprocessors)
         {
+            var result = ApplyPreprocesing(input, preprocessors);
             var sw = Stopwatch.StartNew();
-            var result = DetectEdges(input, op);
+            result = DetectEdges(result, op);
             sw.Stop();
-            Console.WriteLine($"[INFO] CPU Edge Detection took {sw.ElapsedMilliseconds} ms."); 
+            Console.WriteLine($"[INFO] Edge Detection took {sw.ElapsedMilliseconds} ms."); 
 			return result;
+        }
+
+        private static Image<Rgba32> ApplyPreprocesing (Image<Rgba32> input, IPreprocess[] preprocessors)
+        {
+            Image<Rgba32> result = input;
+            foreach (var item in preprocessors) {
+                result = item.Run(result);
+            }
+            return result;
         }
 
         private static Image<Rgba32> DetectEdges (Image<Rgba32> input, OperatorType op)
@@ -89,7 +101,6 @@ namespace EdgeDetection.Core
                 for (int x = 1; x < width - 1; x++) {
                     int sumX = 0;
                     int sumY = 0;
-
                     for (int j = -1; j <= 1; j++) {
                         for (int i = -1; i <= 1; i++) {
                             var pixel = input[x + i, y + j];

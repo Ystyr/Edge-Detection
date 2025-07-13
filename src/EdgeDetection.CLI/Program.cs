@@ -11,14 +11,17 @@ namespace EdgeDetection.CLI
                 Console.WriteLine("------------------------------------");
                 Console.Write("Choose operator (sobel/prewitt): ");
                 string op = Console.ReadLine();
-                string inputPath = "../../../../../assets/fishPie.jpg";
-                string outputPath = $"../../../../../assets/fishPie_{op}.jpg";
+                Console.Write("Select preprocessors: ");
+                string preprocess = Console.ReadLine();
+                string inputPath = "../../../../../assets/Ros.jpg";
+                string outputPath = $"../../../../../assets/Ros_{op}_{preprocess.Replace(' ', '_')}.jpg";
 
                 /// Simulate command-line args
                 args = new string[] {
                     "--input", inputPath,
                     "--output", outputPath,
-                    "--operator", op.ToLower()
+                    "--operator", op.ToLower(),
+                    "--preprocess", preprocess.ToLower()
                 };
                 ConsoleApp.Run(ArgumentParser.ParseArgs(args));
 

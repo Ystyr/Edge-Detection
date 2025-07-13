@@ -21,18 +21,18 @@ namespace EdgeDetection.CLI
             for (int i = 0; i < args.Length; i++) {
                 switch (args[i]) {
                     case "--input":
-                        config.InputPath = args[++i];
+                        config.InputPath = args[++i].Trim();
                         break;
                     case "--output":
-                        config.OutputPath = args[++i];
+                        config.OutputPath = args[++i].Trim();
                         break;
                     case "--operator":
-                        config.Operator = args[++i].ToLower();
+                        config.Operator = args[++i].ToLower().Trim();
                         if (config.Operator != "sobel" && config.Operator != "prewitt")
                             throw new ArgumentException("Invalid operator: must be 'sobel' or 'prewitt'");
                         break;
                     case "--preprocess":
-                        config.PreprocessSteps.AddRange(args[++i].Split(','));
+                        config.PreprocessSteps.AddRange(args[++i].Split(' '));
                         break;
                     case "--force-cpu":
                         config.UseGpu = false;
