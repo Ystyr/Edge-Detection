@@ -28,7 +28,7 @@ namespace EdgeDetection.Core.Preprocessors
                 return RunGPU(input);
             }
             catch (Exception ex) {
-                Console.WriteLine($"[WARN] GPU failed: {ex.Message}, executing CPU fallback");
+                Console.WriteLine($"[WARN] {GetType()} GPU failed: {ex.Message}, executing CPU fallback");
                 return RunCPU(input);
             }
         }

@@ -11,4 +11,10 @@
     <PackageReference Include="Veldrid" Version="4.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="GPU\Compute\EdgeCompute.cso">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

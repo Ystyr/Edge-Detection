@@ -2,7 +2,12 @@
 using SharpGen.Runtime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System.Diagnostics;
+using System.Numerics;
+using System.Runtime.InteropServices;
+using Veldrid;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EdgeDetection.Core
 {
@@ -75,7 +80,7 @@ namespace EdgeDetection.Core
                 return DetectEdgesGPU(input, op);
             }
             catch (Exception ex) {
-                Console.WriteLine($"[WARN] GPU failed: {ex.Message}, executing CPU fallback");
+                Console.WriteLine($"[WARN] {nameof(DetectEdges)} GPU failed: {ex.Message}, executing CPU fallback");
                 return DetectEdgesCPU(input, op);
             }
         }
