@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EdgeDetection.Core.GPU.Utils;
+using System;
 
 namespace EdgeDetection.CLI
 {
@@ -6,6 +7,8 @@ namespace EdgeDetection.CLI
     {
         static void Main(string[] args)
         {
+            GPUProcessingManager.Initialize();
+
             if (args.Length == 0) {
                 Console.WriteLine("EdgeDetection CLI - Interactive Mode");
                 Console.WriteLine("------------------------------------");

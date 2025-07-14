@@ -1,13 +1,8 @@
-﻿using EdgeDetection.Core.Preprocessors;
-using SharpGen.Runtime;
+﻿using EdgeDetection.Core.GPU.Utils;
+using EdgeDetection.Core.Preprocessors;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using System.Diagnostics;
-using System.Numerics;
-using System.Runtime.InteropServices;
-using Veldrid;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace EdgeDetection.Core
 {
@@ -87,7 +82,8 @@ namespace EdgeDetection.Core
 
         private static Image<Rgba32> DetectEdgesGPU (Image<Rgba32> input, OperatorType op)
         {
-            throw new NotImplementedException();
+            var key = "EdgeCompute";//op.ToString() + "Compute";
+            return GPUProcessingManager.Process(input, key);
         }
 
         private static Image<Rgba32> DetectEdgesCPU (Image<Rgba32> input, OperatorType op)

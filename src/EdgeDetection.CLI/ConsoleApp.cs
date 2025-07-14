@@ -2,8 +2,6 @@
 using EdgeDetection.Core.Preprocessors;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing.Processors.Filters;
-using System;
 
 namespace EdgeDetection.CLI
 {
