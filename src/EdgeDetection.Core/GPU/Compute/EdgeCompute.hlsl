@@ -31,8 +31,8 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
         VKernel.r0.xyz, VKernel.r1.xyz, VKernel.r2.xyz
     };
 
-    float3 sumX = float3(0, 0, 0);
-    float3 sumY = float3(0, 0, 0);
+    float sumX = 0; 
+    float sumY = 0; 
     
     [unroll]
     for (int j = -1; j <= 1; j++)
@@ -43,15 +43,15 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
             int2 coord = int2(x + i, y + j);
             coord = clamp(coord, int2(0, 0), int2(Width - 1, Height - 1));
 
-            float3 sample = InputImage.Load(int3(coord, 0)).rgb;
+            float3 pixel = InputImage.Load(int3(coord, 0)).rgb;
+            float lum = 0.299 * pixel.r + 0.587f * pixel.g + 0.114f * pixel.b;
 
-            sumX += sample * kernelX[j + 1][i + 1];
-            sumY += sample * kernelY[j + 1][i + 1];
+            sumX += lum * kernelX[j + 1][i + 1];
+            sumY += lum * kernelY[j + 1][i + 1];
         }
     }
 
-    float mag = length(sumX + sumY);
-    mag = saturate(mag);
+    float mag = saturate(sumX + sumY);
 
     OutputImage[uint2(x, y)] = float4(mag, mag, mag, 1.0);
 }

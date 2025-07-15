@@ -1,6 +1,8 @@
 ﻿using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using EdgeDetection.Core.GPU.Parameters;
+using EdgeDetection.Core.GPU.Utils;
 
 namespace EdgeDetection.Core.Preprocessors
 {
@@ -19,7 +21,11 @@ namespace EdgeDetection.Core.Preprocessors
 
         protected override Image<Rgba32> RunGPU (Image<Rgba32> input)
         {
-            throw new NotImplementedException();
+            var key = "SharpenCompute";
+            var parameters = new ComputeParams.FloatController(
+                (uint)input.Width, (uint)input.Height, Amount
+                );
+            return GPUProcessingManager.Process(input, parameters, key);
         }
     }
 }

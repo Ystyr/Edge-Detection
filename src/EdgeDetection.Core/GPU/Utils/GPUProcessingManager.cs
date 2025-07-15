@@ -11,7 +11,6 @@ namespace EdgeDetection.Core.GPU.Utils
 
         static GraphicsDevice _device;
         static ResourceLayout _layout;
-        static CommandList _commandList;
         static Dictionary<string, Shader> _shaders;
 
         public static void Initialize ()
@@ -19,7 +18,6 @@ namespace EdgeDetection.Core.GPU.Utils
             InitializeGraphicsDevice();
             InitializeCompute();
             InitializeLayout();
-            _commandList = _device.ResourceFactory.CreateCommandList();
         }
 
         public static Image<Rgba32> Process<TParams> (Image<Rgba32> input, TParams parameters, string key)
@@ -158,17 +156,18 @@ namespace EdgeDetection.Core.GPU.Utils
                 TextureUsage.Staging
             ));
 
-            _commandList.Begin();
-            _commandList.SetPipeline(pipeline);
-            _commandList.SetComputeResourceSet(0, resources);
-            _commandList.Dispatch((uint)Math.Ceiling(width / numthread), (uint)Math.Ceiling(height / numthread), 1);
-            _commandList.CopyTexture(destination, stagingTex);
-            _commandList.End();
+            var commandList = _device.ResourceFactory.CreateCommandList();
+            commandList.Begin();
+            commandList.SetPipeline(pipeline);
+            commandList.SetComputeResourceSet(0, resources);
+            commandList.Dispatch((uint)Math.Ceiling(width / numthread), (uint)Math.Ceiling(height / numthread), 1);
+            commandList.CopyTexture(destination, stagingTex);
+            commandList.End();
 
-            _device.SubmitCommands(_commandList);
+            _device.SubmitCommands(commandList);
             _device.WaitForIdle();
 
-            _commandList.Dispose();
+            commandList.Dispose();
 
             var map = _device.Map(stagingTex, MapMode.Read);
 
