@@ -13,20 +13,25 @@ namespace EdgeDetection.CLI
                 Console.WriteLine("EdgeDetection CLI - Interactive Mode");
                 Console.WriteLine("------------------------------------");
                 Console.Write("Choose operator (sobel/prewitt): ");
-                string op = "sobel";// Console.ReadLine();
+                string op = Console.ReadLine();
                 Console.Write("Select preprocessors: ");
-                string preprocess = "blur";// Console.ReadLine();
+                string preprocess = Console.ReadLine();
+                string preprocessFilename = preprocess?.Length > 0? $"_{preprocess?.Replace(' ', '_')}" : "";
                 string inputPath = "../../../../../assets/Ros.jpg";
-                string outputPath = $"../../../../../assets/Ros_{op}_{preprocess.Replace(' ', '_')}.jpg";
+                string outputPath = $"../../../../../assets/Ros_{op}{preprocessFilename}.jpg";
 
                 /// Simulate command-line args
-                args = new string[] {
+                var arguments = new List<string> {
                     "--input", inputPath,
                     "--output", outputPath,
                     "--operator", op.ToLower(),
-                    "--preprocess", preprocess.ToLower()
                 };
-                ConsoleApp.Run(ArgumentParser.ParseArgs(args));
+                if (preprocess != null && preprocess.Length > 0) {
+                    arguments.Add("--preprocess");
+                    arguments.Add(preprocess.ToLower());
+                }
+
+                ConsoleApp.Run(ArgumentParser.ParseArgs(arguments.ToArray()));
 
                 return;
             }

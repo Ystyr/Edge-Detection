@@ -93,10 +93,11 @@ namespace EdgeDetection.Core
 
         private static Image<Rgba32> DetectEdgesGPU (Image<Rgba32> input, OperatorType op)
         {
-            var key = "EdgeCompute";//op.ToString() + "Compute";
+            var key = "EdgeCompute";
+            var kernel = Kernels[op];
             var parameters = new ComputeParams.Edge(
                 (uint)input.Width, (uint)input.Height,
-                Kernel.ToKernel3x3(Sobel.gx), Kernel.ToKernel3x3(Sobel.gy)
+                Kernel.ToKernel3x3(kernel.gx), Kernel.ToKernel3x3(kernel.gy)
                 );
             return GPUProcessingManager.Process(input, parameters, key);
         }

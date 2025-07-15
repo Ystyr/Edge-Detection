@@ -32,7 +32,11 @@ namespace EdgeDetection.CLI
                             throw new ArgumentException("Invalid operator: must be 'sobel' or 'prewitt'");
                         break;
                     case "--preprocess":
-                        config.PreprocessSteps.AddRange(args[++i].Split(' '));
+                        string preprocessLine = args[++i].Trim();
+                        if (preprocessLine != null || preprocessLine.Length > 0) {
+                            string[] preprocessNames = preprocessLine.Split(' ');
+                            config.PreprocessSteps.AddRange(preprocessNames);
+                        }
                         break;
                     case "--force-cpu":
                         config.UseGpu = false;
