@@ -63,7 +63,7 @@ namespace EdgeDetection.Core
 
         public static Image<Rgba32> Run (Image<Rgba32> input, OperatorType op, bool forceCPU = false, params IPreprocess[] preprocessors)
         {
-            var result = ApplyPreprocesing(input, preprocessors, forceCPU);
+            var result = ApplyPreprocessing(input, preprocessors, forceCPU);
             var sw = Stopwatch.StartNew();
             result = DetectEdges(result, op, forceCPU);
             sw.Stop();
@@ -71,7 +71,7 @@ namespace EdgeDetection.Core
 			return result;
         }
 
-        private static Image<Rgba32> ApplyPreprocesing (Image<Rgba32> input, IPreprocess[] preprocessors, bool forceCPU = false)
+        private static Image<Rgba32> ApplyPreprocessing (Image<Rgba32> input, IPreprocess[] preprocessors, bool forceCPU = false)
         {
             Image<Rgba32> result = input;
             foreach (var item in preprocessors) {

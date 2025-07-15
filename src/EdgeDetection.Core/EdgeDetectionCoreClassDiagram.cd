@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EdgeDetection.Core.EdgeDetector">
+    <Position X="4.75" Y="0.5" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="EdgeDetection.Core.EdgeDetector.OperatorType">
+        <TypeIdentifier>
+          <NewMemberFileName>EdgeDetector.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAACAAABAAIACAAAAAAAAAAAAAAAAAAAABAAAAAQAAI=</HashCode>
+      <FileName>EdgeDetector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdgeDetection.Core.Preprocessors.PreprocessorBase">
+    <Position X="2.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAAAAAAAAQAQI=</HashCode>
+      <FileName>Preprocessors\PreprocessorBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EdgeDetection.Core.Preprocessors.BlurPreprocessor">
+    <Position X="0.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQA=</HashCode>
+      <FileName>Preprocessors\BlurPreprocessor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdgeDetection.Core.Preprocessors.ContrastPreprocessor">
+    <Position X="2.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQA=</HashCode>
+      <FileName>Preprocessors\ContrastPreprocessor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdgeDetection.Core.Preprocessors.SharpenPreprocessor">
+    <Position X="4.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQA=</HashCode>
+      <FileName>Preprocessors\SharpenPreprocessor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdgeDetection.Core.GPU.Utils.GPUProcessingManager">
+    <Position X="8" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAgIAAAQAAkkAgAEAAAAAAgCBAAAAAAEAAAAA=</HashCode>
+      <FileName>GPU\Utils\GPUProcessingManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdgeDetection.Core.GPU.Parameters.ComputeParams">
+    <Position X="11.25" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="EdgeDetection.Core.GPU.Parameters.ComputeParams.Base" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPU\Parameters\ComputeParams.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="EdgeDetection.Core.GPU.Parameters.ComputeParams.FloatController" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPU\Parameters\ComputeParams.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="EdgeDetection.Core.GPU.Parameters.ComputeParams.Edge" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPU\Parameters\ComputeParams.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GPU\Parameters\ComputeParams.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="EdgeDetection.Core.GPU.Parameters.Kernel3x3" Collapsed="true">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAABAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>GPU\Parameters\ComputeParams.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="EdgeDetection.Core.Preprocessors.IPreprocess" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Preprocessors\IPreprocess.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

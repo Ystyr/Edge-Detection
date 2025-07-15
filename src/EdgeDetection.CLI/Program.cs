@@ -1,5 +1,4 @@
 ﻿using EdgeDetection.Core.GPU.Utils;
-using System;
 
 namespace EdgeDetection.CLI
 {
@@ -14,13 +13,15 @@ namespace EdgeDetection.CLI
                 Console.WriteLine("------------------------------------");
                 Console.Write("Choose operator (sobel/prewitt): ");
                 string op = Console.ReadLine();
-                Console.Write("Select preprocessors: ");
+                Console.Write("Enter optional preprocessing steps (space-separated): ");
                 string preprocess = Console.ReadLine();
                 Console.Write("Forse CPU (y/n):");
                 string forceCPU = Console.ReadLine();
                 string preprocessFilename = preprocess?.Length > 0? $"_{preprocess?.Replace(' ', '_')}" : "";
-                string inputPath = "../../../../../assets/Ros.jpg";
-                string outputPath = $"../../../../../assets/Ros_{op}{preprocessFilename}.jpg";
+                Console.Write("Enter source image path:");
+                string inputPath = Console.ReadLine();
+                Console.Write("Enter output file path:");
+                string outputPath = Console.ReadLine();
 
                 /// Simulate command-line args
                 var arguments = new List<string> {
