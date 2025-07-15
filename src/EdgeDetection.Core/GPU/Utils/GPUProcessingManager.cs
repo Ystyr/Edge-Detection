@@ -171,19 +171,22 @@ namespace EdgeDetection.Core.GPU.Utils
 
         private static byte[] GetTextureBytes (Image<Rgba32> input)
         {
-            byte[] data = new byte[input.Width * input.Height * 4];
+            int width = input.Width;
+            int height = input.Height;
+            byte[] data = new byte[width * height * 4];
+
+            if (input.DangerousTryGetSinglePixelMemory(out Memory<Rgba32> pixelMemory)) {
+                /// Fast path: contiguous buffer, reinterpret as byte[]
+                return MemoryMarshal.AsBytes(pixelMemory.Span).ToArray();
+            }
+
+            /// Safe fallback: row-by-row copy
             input.ProcessPixelRows(accessor => {
                 for (int y = 0; y < accessor.Height; y++) {
                     var row = accessor.GetRowSpan(y);
-                    for (int x = 0; x < row.Length; x++) {
-                        var color = row[x];
-                        int idx = (y * input.Width + x) * 4;
+                    var rowBytes = MemoryMarshal.AsBytes(row);
 
-                        data[idx + 0] = color.R;
-                        data[idx + 1] = color.G;
-                        data[idx + 2] = color.B;
-                        data[idx + 3] = color.A;
-                    }
+                    Buffer.BlockCopy(rowBytes.ToArray(), 0, data, y * width * 4, width * 4);
                 }
             });
 
@@ -192,22 +195,17 @@ namespace EdgeDetection.Core.GPU.Utils
 
         private static Image<Rgba32> CreateImage (MappedResource map, int width, int height)
         {
-            var result = new Image<Rgba32>(width, height);
+            int rowPitch = (int)map.RowPitch;
+            byte[] rowBytes = new byte[rowPitch];
+            byte[] pixelBytes = new byte[width * height * 4];
+
+            /// Copy row-by-row contagiously
             for (int y = 0; y < height; y++) {
-                var rowPtr = IntPtr.Add(map.Data, (int)(y * map.RowPitch));
-
-                for (int x = 0; x < width; x++) {
-                    int pixelOffset = x * 4;
-                    byte r = Marshal.ReadByte(rowPtr, pixelOffset + 0);
-                    byte g = Marshal.ReadByte(rowPtr, pixelOffset + 1);
-                    byte b = Marshal.ReadByte(rowPtr, pixelOffset + 2);
-                    byte a = Marshal.ReadByte(rowPtr, pixelOffset + 3);
-
-                    result[x, y] = new Rgba32(r, g, b, a);
-                }
+                var rowPtr = IntPtr.Add(map.Data, y * rowPitch);
+                Marshal.Copy(rowPtr, rowBytes, 0, rowPitch);
+                Buffer.BlockCopy(rowBytes, 0, pixelBytes, y * width * 4, width * 4);
             }
-
-            return result;
+            return Image.LoadPixelData<Rgba32>(pixelBytes, width, height);
         }
     }
 }
