@@ -12,7 +12,7 @@ namespace EdgeDetection.CLI
             var opereator = Enum.Parse<EdgeDetector.OperatorType>(config.Operator, true);
             var preprocessors = CreatePreprocessors(config.PreprocessSteps);
             using var image = Image.Load<Rgba32>(config.InputPath);
-            using var result = EdgeDetector.Run(image, opereator, preprocessors);
+            using var result = EdgeDetector.Run(image, opereator, !config.UseGpu, preprocessors);
             result.Save(config.OutputPath);
         }
 

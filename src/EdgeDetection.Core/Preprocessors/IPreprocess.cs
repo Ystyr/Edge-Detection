@@ -5,6 +5,6 @@ namespace EdgeDetection.Core.Preprocessors
 {
     public interface IPreprocess
     {
-        Image<Rgba32> Run (Image<Rgba32> input);
+        Image<Rgba32> Run (Image<Rgba32> input, bool forceCPU = false);
     }
 }

@@ -61,28 +61,32 @@ namespace EdgeDetection.Core
             { OperatorType.Sobel, Sobel}, { OperatorType.Prewitt, Prewitt}
         };
 
-        public static Image<Rgba32> Run (Image<Rgba32> input, OperatorType op, params IPreprocess[] preprocessors)
+        public static Image<Rgba32> Run (Image<Rgba32> input, OperatorType op, bool forceCPU = false, params IPreprocess[] preprocessors)
         {
-            var result = ApplyPreprocesing(input, preprocessors);
+            var result = ApplyPreprocesing(input, preprocessors, forceCPU);
             var sw = Stopwatch.StartNew();
-            result = DetectEdges(result, op);
+            result = DetectEdges(result, op, forceCPU);
             sw.Stop();
             Console.WriteLine($"[INFO] Edge Detection took {sw.ElapsedMilliseconds} ms."); 
 			return result;
         }
 
-        private static Image<Rgba32> ApplyPreprocesing (Image<Rgba32> input, IPreprocess[] preprocessors)
+        private static Image<Rgba32> ApplyPreprocesing (Image<Rgba32> input, IPreprocess[] preprocessors, bool forceCPU = false)
         {
             Image<Rgba32> result = input;
             foreach (var item in preprocessors) {
-                result = item.Run(result);
+                result = item.Run(result, forceCPU);
             }
             return result;
         }
 
-        private static Image<Rgba32> DetectEdges (Image<Rgba32> input, OperatorType op)
+        private static Image<Rgba32> DetectEdges (Image<Rgba32> input, OperatorType op, bool forceCPU = false)
         {
             try {
+                if (forceCPU) {
+                    Console.WriteLine($"[INFO] {nameof(DetectEdges)}, forced CPU.");
+                    return DetectEdgesCPU(input, op);
+                }
                 return DetectEdgesGPU(input, op);
             }
             catch (Exception ex) {

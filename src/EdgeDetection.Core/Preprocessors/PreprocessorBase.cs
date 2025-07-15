@@ -13,18 +13,22 @@ namespace EdgeDetection.Core.Preprocessors
             Amount = amount;
         }
 
-        public Image<Rgba32> Run (Image<Rgba32> input)
+        public Image<Rgba32> Run (Image<Rgba32> input, bool forceCPU = false)
         {
             var sw = Stopwatch.StartNew();
-            var result = Process(input);
+            var result = Process(input, forceCPU);
             sw.Stop();
             Console.WriteLine($"[INFO] Preprocessing {GetType()} took {sw.ElapsedMilliseconds} ms.");
             return result;
         }
 
-        private Image<Rgba32> Process (Image<Rgba32> input)
+        private Image<Rgba32> Process (Image<Rgba32> input, bool forceCPU = false)
         {
             try {
+                if (forceCPU) {
+                    Console.WriteLine($"[INFO] {(GetType())}.{nameof(Process)}, forced CPU.");
+                    return RunCPU(input);
+                }
                 return RunGPU(input);
             }
             catch (Exception ex) {

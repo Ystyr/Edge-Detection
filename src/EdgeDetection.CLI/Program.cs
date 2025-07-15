@@ -16,6 +16,8 @@ namespace EdgeDetection.CLI
                 string op = Console.ReadLine();
                 Console.Write("Select preprocessors: ");
                 string preprocess = Console.ReadLine();
+                Console.Write("Forse CPU (y/n):");
+                string forceCPU = Console.ReadLine();
                 string preprocessFilename = preprocess?.Length > 0? $"_{preprocess?.Replace(' ', '_')}" : "";
                 string inputPath = "../../../../../assets/Ros.jpg";
                 string outputPath = $"../../../../../assets/Ros_{op}{preprocessFilename}.jpg";
@@ -29,6 +31,9 @@ namespace EdgeDetection.CLI
                 if (preprocess != null && preprocess.Length > 0) {
                     arguments.Add("--preprocess");
                     arguments.Add(preprocess.ToLower());
+                }
+                if (forceCPU != null && forceCPU == "y") {
+                    arguments.Add($"--force-cpu");
                 }
 
                 ConsoleApp.Run(ArgumentParser.ParseArgs(arguments.ToArray()));
