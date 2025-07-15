@@ -18,7 +18,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="EdgeDetection.Core.Preprocessors.PreprocessorBase">
-    <Position X="2.5" Y="1.5" Width="1.5" />
+    <Position X="2.25" Y="1.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAAAAAAAAQAQI=</HashCode>
       <FileName>Preprocessors\PreprocessorBase.cs</FileName>
