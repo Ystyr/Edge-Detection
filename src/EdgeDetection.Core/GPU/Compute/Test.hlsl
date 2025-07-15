@@ -2,6 +2,7 @@ cbuffer Params : register(b0)
 {
     uint Width;
     uint Height;
+    float Amount;
 };
 
 Texture2D<float4> InputImage : register(t0);
@@ -17,5 +18,5 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
         return;
 
     float4 color = InputImage.Load(int3(x, y, 0));
-    OutputImage[uint2(x, y)] = color;
+    OutputImage[uint2(x, y)] = color * Amount;
 }

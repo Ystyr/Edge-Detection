@@ -22,19 +22,21 @@ namespace EdgeDetection.Core.GPU.Utils
             _commandList = _device.ResourceFactory.CreateCommandList();
         }
 
-        public static Image<Rgba32> Process (Image<Rgba32> input, string key)
+        public static Image<Rgba32> Process<TParams> (Image<Rgba32> input, TParams parameters, string key)
+            where TParams : unmanaged
         {
             uint width = (uint)input.Width;
             uint height = (uint)input.Height;
             var shader = _shaders[key];
             var pipeline = CreatePipeline(shader, _layout);
-            var buffer = CreateBuffer(width, height);
+            var buffer = CreateBuffer(parameters);
             var maps = GetMaps(input);
             var resources = CreateResourceSet(buffer, maps.src, maps.result);
             var texBytes = GetTextureBytes(input);
-            
+
             _device.UpdateTexture(
-                maps.src, texBytes, 0, 0, 0, width, height, 1, 0, 0
+                maps.src, texBytes, 0, 0, 0, 
+                width, height, 1, 0, 0
                 );
 
             return ExecuteGPUProgram(pipeline, resources, maps.result, width, height);
@@ -104,11 +106,17 @@ namespace EdgeDetection.Core.GPU.Utils
             return (srcTex, resultTex);
         }
 
-        private static DeviceBuffer CreateBuffer (uint width, uint height)
+        private static DeviceBuffer CreateBuffer<TParams> (TParams parameters)
+            where TParams : unmanaged
         {
-            var buffer = _device.ResourceFactory.CreateBuffer(new BufferDescription(16, BufferUsage.UniformBuffer));
-            _device.UpdateBuffer(buffer, 0, BitConverter.GetBytes(width));
-            _device.UpdateBuffer(buffer, 4, BitConverter.GetBytes(height));
+            /// Compute the byte‑size of the struct 
+            uint rawSize = (uint)Marshal.SizeOf<TParams>();
+            /// auto‑pads to 16 bytes if needed
+            uint alignedSize = ((rawSize + 15) / 16) * 16;
+            var buffer = _device.ResourceFactory.CreateBuffer(
+                new BufferDescription(alignedSize, BufferUsage.UniformBuffer)
+                );
+            _device.UpdateBuffer(buffer, 0, ref parameters);
 
             return buffer;
         }
@@ -137,7 +145,7 @@ namespace EdgeDetection.Core.GPU.Utils
         }
 
         private static Image<Rgba32> ExecuteGPUProgram (
-            Pipeline pipeline, ResourceSet resources, Texture destination, 
+            Pipeline pipeline, ResourceSet resources, Texture destination,
             uint width, uint height)
         {
             var factory = _device.ResourceFactory;
@@ -149,7 +157,7 @@ namespace EdgeDetection.Core.GPU.Utils
                 PixelFormat.R8_G8_B8_A8_UNorm,
                 TextureUsage.Staging
             ));
-            
+
             _commandList.Begin();
             _commandList.SetPipeline(pipeline);
             _commandList.SetComputeResourceSet(0, resources);

@@ -13,7 +13,7 @@ namespace EdgeDetection.CLI
                 Console.WriteLine("EdgeDetection CLI - Interactive Mode");
                 Console.WriteLine("------------------------------------");
                 Console.Write("Choose operator (sobel/prewitt): ");
-                string op = Console.ReadLine();
+                string op = "sobel";// Console.ReadLine();
                 Console.Write("Select preprocessors: ");
                 string preprocess = "blur";// Console.ReadLine();
                 string inputPath = "../../../../../assets/Ros.jpg";

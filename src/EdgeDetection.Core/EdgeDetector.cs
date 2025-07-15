@@ -1,8 +1,10 @@
-﻿using EdgeDetection.Core.GPU.Utils;
+﻿using EdgeDetection.Core.GPU.Parameters;
+using EdgeDetection.Core.GPU.Utils;
 using EdgeDetection.Core.Preprocessors;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Diagnostics;
+using System.Numerics;
 
 namespace EdgeDetection.Core
 {
@@ -18,6 +20,15 @@ namespace EdgeDetection.Core
         {
             public int[,] gx;
             public int[,] gy;
+
+            public static Kernel3x3 ToKernel3x3 (int[,] value)
+            {
+                return new Kernel3x3(
+                    new Vector3(value[0, 0], value[0, 1], value[0, 2]),
+                    new Vector3(value[1, 0], value[1, 1], value[1, 2]),
+                    new Vector3(value[2, 0], value[2, 1], value[2, 2])
+                    );
+            }
         }
 
         static readonly Kernel Sobel = new Kernel {
@@ -83,7 +94,11 @@ namespace EdgeDetection.Core
         private static Image<Rgba32> DetectEdgesGPU (Image<Rgba32> input, OperatorType op)
         {
             var key = "EdgeCompute";//op.ToString() + "Compute";
-            return GPUProcessingManager.Process(input, key);
+            var parameters = new ComputeParams.Edge(
+                (uint)input.Width, (uint)input.Height,
+                Kernel.ToKernel3x3(Sobel.gx), Kernel.ToKernel3x3(Sobel.gy)
+                );
+            return GPUProcessingManager.Process(input, parameters, key);
         }
 
         private static Image<Rgba32> DetectEdgesCPU (Image<Rgba32> input, OperatorType op)
