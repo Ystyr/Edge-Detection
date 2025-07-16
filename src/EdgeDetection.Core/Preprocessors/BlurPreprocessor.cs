@@ -6,6 +6,9 @@ using EdgeDetection.Core.GPU.Utils;
 
 namespace EdgeDetection.Core.Preprocessors
 {
+    /// <summary>
+    /// Applies Gaussian blur using ImageSharp (CPU) or custom compute shader (GPU)
+    /// </summary>
     public class BlurPreprocessor : PreprocessorBase
     {
         public BlurPreprocessor (float amount = .5f) : base(amount)

@@ -6,9 +6,10 @@ namespace EdgeDetection.CLI
     {
         static void Main(string[] args)
         {
-            GPUProcessingManager.Initialize();
+            GPUProcessingManager.Initialize(); /// Critical GPU setup
 
             if (args.Length == 0) {
+                /// Interactive mode for user-friendly testing
                 Console.WriteLine("EdgeDetection CLI - Interactive Mode");
                 Console.WriteLine("------------------------------------");
                 Console.Write("Choose operator (sobel/prewitt): ");
@@ -17,7 +18,7 @@ namespace EdgeDetection.CLI
                 string preprocess = Console.ReadLine();
                 Console.Write("Forse CPU (y/n):");
                 string forceCPU = Console.ReadLine();
-                string preprocessFilename = preprocess?.Length > 0? $"_{preprocess?.Replace(' ', '_')}" : "";
+                string preprocessFilename = preprocess?.Length > 0 ? $"_{preprocess?.Replace(' ', '_')}" : "";
                 Console.Write("Enter source image path:");
                 string inputPath = Console.ReadLine();
                 Console.Write("Enter output file path:");
@@ -42,6 +43,7 @@ namespace EdgeDetection.CLI
                 return;
             }
 
+            /// Standard command-line processing
             try {
                 var config = ArgumentParser.ParseArgs(args);
                 ConsoleApp.Run(config);

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace EdgeDetection.CLI
 {
+    /// <summary>
+    /// Configuration container for CLI arguments with safe defaults
+    /// </summary>
     public class CliConfig
     {
         public string InputPath { get; set; }
@@ -12,12 +15,16 @@ namespace EdgeDetection.CLI
         public bool UseGpu { get; set; } = true;
     }
 
+    /// <summary>
+    /// Command-line parser with validation and error handling
+    /// </summary>
     public static class ArgumentParser
     {
         public static CliConfig ParseArgs(string[] args)
         {
             var config = new CliConfig();
-
+            
+            /// Sequential argument processing with lookahead
             for (int i = 0; i < args.Length; i++) {
                 switch (args[i]) {
                     case "--input":
@@ -27,11 +34,13 @@ namespace EdgeDetection.CLI
                         config.OutputPath = args[++i].Trim();
                         break;
                     case "--operator":
+                        /// Validation for supported operators
                         config.Operator = args[++i].ToLower().Trim();
                         if (config.Operator != "sobel" && config.Operator != "prewitt")
                             throw new ArgumentException("Invalid operator: must be 'sobel' or 'prewitt'");
                         break;
                     case "--preprocess":
+                        /// Supports space-separated preprocessing steps
                         string preprocessLine = args[++i].Trim();
                         if (preprocessLine != null || preprocessLine.Length > 0) {
                             string[] preprocessNames = preprocessLine.Split(' ');
@@ -39,6 +48,7 @@ namespace EdgeDetection.CLI
                         }
                         break;
                     case "--force-cpu":
+                        /// GPU opt-out
                         config.UseGpu = false;
                         break;
                     default:

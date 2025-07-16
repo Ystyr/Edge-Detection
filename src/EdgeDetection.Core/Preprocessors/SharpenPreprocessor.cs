@@ -6,6 +6,9 @@ using EdgeDetection.Core.GPU.Utils;
 
 namespace EdgeDetection.Core.Preprocessors
 {
+    /// <summary>
+    /// Sharpen the image using ImageSharp (CPU) or custom compute shader (GPU)
+    /// </summary>
     public class SharpenPreprocessor : PreprocessorBase
     {
         public SharpenPreprocessor (float amount = .5f) : base(amount)

@@ -8,6 +8,10 @@ using System.Numerics;
 
 namespace EdgeDetection.Core
 {
+    /// <summary>
+    /// Static entry point for edge detection: applies optional preprocessing,
+    /// then dispatches either GPU or CPU Sobel/Prewitt operator.
+    /// </summary>
     public static class EdgeDetector
     {
         public enum OperatorType
@@ -16,6 +20,10 @@ namespace EdgeDetection.Core
             Prewitt
         }
 
+        /// <summary>
+        /// Kernel holds the two convolution matrices (Gx, Gy).
+        /// Provides helper to convert to the 3×3 struct used by our compute shaders.
+        /// </summary>
         public record Kernel
         {
             public int[,] gx;
@@ -31,6 +39,7 @@ namespace EdgeDetection.Core
             }
         }
 
+        /// Predefined CPU/GPU kernels
         static readonly Kernel Sobel = new Kernel {
             gx = new int[,] {
             { -1, 0, 1 },
@@ -61,7 +70,12 @@ namespace EdgeDetection.Core
             { OperatorType.Sobel, Sobel}, { OperatorType.Prewitt, Prewitt}
         };
 
-        public static Image<Rgba32> Run (Image<Rgba32> input, OperatorType op, bool forceCPU = false, params IPreprocess[] preprocessors)
+        /// <summary>
+        /// Top‑level API: apply any preprocessors, then detect edges.
+        /// </summary>
+        public static Image<Rgba32> Run (
+            Image<Rgba32> input, OperatorType op, 
+            bool forceCPU = false, params IPreprocess[] preprocessors)
         {
             var result = ApplyPreprocessing(input, preprocessors, forceCPU);
             var sw = Stopwatch.StartNew();
@@ -99,6 +113,7 @@ namespace EdgeDetection.Core
         {
             var key = "EdgeCompute";
             var kernel = Kernels[op];
+            /// Prepare uniform struct for the compute shader
             var parameters = new ComputeParams.Edge(
                 (uint)input.Width, (uint)input.Height,
                 Kernel.ToKernel3x3(kernel.gx), Kernel.ToKernel3x3(kernel.gy)
@@ -118,10 +133,11 @@ namespace EdgeDetection.Core
             var output = new Image<Rgba32>(width, height);
             var kernel = Kernels[op];
 
+            /// Skip border pixels to avoid out‑of‑bounds
             for (int y = 1; y < height - 1; y++) {
                 for (int x = 1; x < width - 1; x++) {
-                    int sumX = 0;
-                    int sumY = 0;
+                    int sumX = 0, sumY = 0;
+                    /// Convolve 3×3 neighborhood
                     for (int j = -1; j <= 1; j++) {
                         for (int i = -1; i <= 1; i++) {
                             var pixel = input[x + i, y + j];

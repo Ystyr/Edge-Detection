@@ -4,9 +4,13 @@ using System.Diagnostics;
 
 namespace EdgeDetection.Core.Preprocessors
 {
+    /// <summary>
+    /// Base class for preprocessors implementing automatic CPU/GPU dispatch.
+    /// </summary>
     public abstract class PreprocessorBase : IPreprocess
     {
-        public float Amount { get; private set; }
+        /// Intensity control for the operation
+        public float Amount { get; private set; } 
 
         protected PreprocessorBase (float amount)
         {
